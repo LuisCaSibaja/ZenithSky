@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ZenithSky.API/ZenithSky.API.csproj" />
+  <Project Path="ZenithSky.Business/ZenithSky.Business.csproj" />
+  <Project Path="ZenithSky.Data/ZenithSky.Data.csproj" />
+  <Project Path="ZenithSky.Domain/ZenithSky.Domain.csproj" />
+</Solution>
