@@ -13,8 +13,8 @@ namespace ZenithSky.API.Controllers
     [ApiController]
     public class AirportsController : ControllerBase
     {
-        private readonly AirportBusiness airportBusiness;
-
+        /* readonly AirportBusiness airportBusiness;
+        
         public AirportsController(IConfiguration configuration)
         {
             // Asegúrate de que el nombre "ZenithSkyDB" coincida con tu appsettings.json
@@ -27,7 +27,7 @@ namespace ZenithSky.API.Controllers
         [HttpGet]
         public IEnumerable<Airport> GetAll([FromQuery] string? search = null)
         {
-            Airport airports = airportBusiness.GetAllAirports(search);
+            Airport airports = airportBusiness.GetAirports(search);
             return airports;
         }////metodo de busqueda de aeropuertos
 
@@ -48,5 +48,6 @@ namespace ZenithSky.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }//metodo de id de aeropuertos
+        */
     }
 }

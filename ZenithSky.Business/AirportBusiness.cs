@@ -15,9 +15,10 @@ namespace ZenithSky.Business
             this.airportData = new AirportData(connectionString);
         }
 
-        public async List<Airport> GetAllAirports(string search)
+        /*
+        public async List<Airport> GetAirports(string search)
         {
-            return await airportData.GetAllAirports(search);
+            return await airportData.GetAirports(search);
         }
 
         public async Task<Airport?> GetByAirportId(int id)
@@ -27,7 +28,7 @@ namespace ZenithSky.Business
 
             return await airportData.GetByAirportId(id);
         }
-
+        */
         
     }
 }

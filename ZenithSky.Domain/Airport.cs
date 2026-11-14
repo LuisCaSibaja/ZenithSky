@@ -30,4 +30,4 @@ namespace ZenithSky.Domain
         public string Name { get => name; set => name = value; }
     }
 }
-}
+
