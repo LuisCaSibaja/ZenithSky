@@ -3,4 +3,5 @@
   <Project Path="ZenithSky.Business/ZenithSky.Business.csproj" />
   <Project Path="ZenithSky.Data/ZenithSky.Data.csproj" />
   <Project Path="ZenithSky.Domain/ZenithSky.Domain.csproj" />
+  <Project Path="ZenithSky.Test/ZenithSky.Test.csproj" Id="bf6d4315-7e23-4f73-8d77-fe6c31a1cd33" />
 </Solution>
