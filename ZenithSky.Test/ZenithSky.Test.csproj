@@ -16,6 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ZenithSky.API\ZenithSky.API.csproj" />
+    <ProjectReference Include="..\ZenithSky.Business\ZenithSky.Business.csproj" />
+    <ProjectReference Include="..\ZenithSky.Data\ZenithSky.Data.csproj" />
+    <ProjectReference Include="..\ZenithSky.Domain\ZenithSky.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 

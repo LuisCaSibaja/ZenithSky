@@ -108,7 +108,7 @@ namespace ZenithSky.Data
 
         }
 
-        public void Actualizar(int airport_id//revisar
+        public void Actualizar(int airport_id)//revisar
         {
 
         }
