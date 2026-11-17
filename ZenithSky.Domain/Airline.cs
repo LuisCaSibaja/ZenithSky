@@ -26,6 +26,7 @@ namespace ZenithSky.Domain
 
         public int AirlineId { get => airlineId; set => airlineId = value; }
         public string Iata { get => iata; set => iata = value; }
+
         public string AirlineName { get => airlineName; set => airlineName = value; }
         public Airport BaseAirport { get => baseAirport; set => baseAirport = value; }
     }
