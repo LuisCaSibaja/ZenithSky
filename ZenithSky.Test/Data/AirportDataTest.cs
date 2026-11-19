@@ -103,6 +103,168 @@ namespace ZenithSky.Test.Data
 
 
         }
+
+        //Validaciones
+
+        [Test]
+        public async Task IataExists_WhenIataIsDuplicated()
+        {
+            AirportData airportData = new AirportData(this.connectionString);
+            bool exists = await airportData.IataExists("SJO");
+            Assert.That(exists, Is.True);
+        }
+
+        [Test]
+        public async Task IataExists_WhenIataIsNew()
+        {
+            AirportData airportData = new AirportData(this.connectionString);
+            bool exists = await airportData.IataExists("QQQ");
+            Assert.That(exists, Is.False);
+        }
+
+        [Test]
+        public async Task IataExists_ExcluyeAlMismoAeropuerto()
+        {
+            // En el PUT, el aeropuerto 1 puede conservar su propio IATA
+            AirportData airportData = new AirportData(this.connectionString);
+            bool exists = await airportData.IataExists("SJO", 1);
+            Assert.That(exists, Is.False);
+        }
+
+        [Test]
+        public async Task IcaoExists_WhenIcaoIsDuplicated()
+        {
+            AirportData airportData = new AirportData(this.connectionString);
+            bool exists = await airportData.IcaoExists("MROC");
+            Assert.That(exists, Is.True);
+        }
+
+        [Test]
+        public async Task IcaoExists_WhenIcaoIsNew()
+        {
+            AirportData airportData = new AirportData(this.connectionString);
+            bool exists = await airportData.IcaoExists("QQQQ");
+            Assert.That(exists, Is.False);
+        }
+
+        [Test]
+        public async Task IcaoExists_ExcluyeAlMismoAeropuerto()
+        {
+            AirportData airportData = new AirportData(this.connectionString);
+            bool exists = await airportData.IcaoExists("MROC", 1);
+            Assert.That(exists, Is.False);
+        }
+
+        [Test]
+        public async Task IsBaseAirport_WhenAirportIsBaseOfAnAirline()
+        {
+            // El aeropuerto 1 (SJO) es base de ZenithSky Airlines -> DELETE debe dar 409
+            AirportData airportData = new AirportData(this.connectionString);
+            bool isBase = await airportData.IsBaseAirport(1);
+            Assert.That(isBase, Is.True);
+        }
+
+        [Test]
+        public async Task IsBaseAirport_WhenAirportIsNotBase()
+        {
+            // El aeropuerto 4 (LIR) no es base de ninguna aerolínea -> se puede eliminar
+            AirportData airportData = new AirportData(this.connectionString);
+            bool isBase = await airportData.IsBaseAirport(4);
+            Assert.That(isBase, Is.False);
+        }
+
+        [Test]
+        public async Task Insert_Exitoso()
+        {
+            // Arrange
+            AirportData airportData = new AirportData(this.connectionString);
+            var request = new AirportRequest { Iata = "QQQ", Icao = "QQQQ", Name = "Test Insert" };
+            int newId = 0;
+
+            try
+            {
+                // Act
+                newId = await airportData.Insert(request);
+                Airport? created = await airportData.GetByAirportId(newId);
+
+                // Assert
+                Assert.That(newId, Is.GreaterThan(0));
+                Assert.That(created, Is.Not.Null);
+                Assert.That(created.Iata, Is.EqualTo("QQQ"));
+                Assert.That(created.Icao, Is.EqualTo("QQQQ"));
+                Assert.That(created.Name, Is.EqualTo("Test Insert"));
+
+                System.Console.WriteLine($"Aeropuerto creado con ID {newId}");
+            }
+            finally
+            {
+                if (newId > 0)
+                    await airportData.Delete(newId);
+            }
+        }
+
+        [Test]
+        public async Task Update_Exitoso()
+        {
+            // Arrange
+            AirportData airportData = new AirportData(this.connectionString);
+            int newId = await airportData.Insert(
+                new AirportRequest { Iata = "QQQ", Icao = "QQQQ", Name = "Test Update" });
+
+            try
+            {
+                var changes = new AirportRequest { Iata = "QQW", Icao = "QQQW", Name = "Test Update Editado" };
+
+                // Act
+                bool updated = await airportData.Update(newId, changes);
+                Airport? airport = await airportData.GetByAirportId(newId);
+
+                // Assert
+                Assert.That(updated, Is.True);
+                Assert.That(airport, Is.Not.Null);
+                Assert.That(airport.Iata, Is.EqualTo("QQW"));
+                Assert.That(airport.Icao, Is.EqualTo("QQQW"));
+                Assert.That(airport.Name, Is.EqualTo("Test Update Editado"));
+            }
+            finally
+            {
+                await airportData.Delete(newId);
+            }
+        }
+
+        [Test]
+        public async Task Update_WhenAirportDoesNotExist()
+        {
+            AirportData airportData = new AirportData(this.connectionString);
+            var changes = new AirportRequest { Iata = "QQQ", Icao = "QQQQ", Name = "No existe" };
+            bool updated = await airportData.Update(99999, changes);
+            Assert.That(updated, Is.False);
+        }
+
+        [Test]
+        public async Task Delete_Exitoso()
+        {
+            // Arrange
+            AirportData airportData = new AirportData(this.connectionString);
+            int newId = await airportData.Insert(
+                new AirportRequest { Iata = "QQQ", Icao = "QQQQ", Name = "Test Delete" });
+
+            // Act
+            bool deleted = await airportData.Delete(newId);
+            Airport? airport = await airportData.GetByAirportId(newId);
+
+            // Assert
+            Assert.That(deleted, Is.True);
+            Assert.That(airport, Is.Null);
+        }
+
+        [Test]
+        public async Task Delete_WhenAirportDoesNotExist()
+        {
+            AirportData airportData = new AirportData(this.connectionString);
+            bool deleted = await airportData.Delete(99999);
+            Assert.That(deleted, Is.False);
+        }
     }
 }
 
