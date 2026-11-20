@@ -1,5 +1,6 @@
 using ZenithSky.Data;
 using ZenithSky.Domain;
+using ZenithSky.Dto;
 
 namespace ZenithSky.Test.Data
 {
@@ -114,7 +115,7 @@ namespace ZenithSky.Test.Data
             Assert.That(airplane.AirplaneType.TypeId, Is.EqualTo(2));
             Assert.That(airplane.AirplaneType.Identifier, Is.EqualTo("A320"));
             Assert.That(airplane.Airline.AirlineId, Is.EqualTo(1));
-            Assert.That(airplane.Airline.Iata, Is.EqualTo("ZS"));
+            Assert.That(airplane.Airline.Iata, Is.EqualTo("Z3"));
             Assert.That(airplane.Airline.BaseAirport.Iata, Is.EqualTo("SJO"));
 
             System.Console.WriteLine($"- #{airplane.AirplaneId} {airplane.AirplaneType.Identifier} ({airplane.Capacity} pax) - {airplane.Airline.AirlineName}");
@@ -167,7 +168,7 @@ namespace ZenithSky.Test.Data
         {
             // Arrange
             AirplaneData airplaneData = new AirplaneData(this.connectionString);
-            var request = new AirplaneRequest { Capacity = 150, TypeId = 3, AirlineId = 3 };
+            var request = new AirplaneDTO { Capacity = 150, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } };
             int newId = 0;
 
             try
@@ -198,11 +199,11 @@ namespace ZenithSky.Test.Data
             // Arrange
             AirplaneData airplaneData = new AirplaneData(this.connectionString);
             int newId = await airplaneData.Insert(
-                new AirplaneRequest { Capacity = 150, TypeId = 3, AirlineId = 3 });
+                new AirplaneDTO { Capacity = 150, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } });
 
             try
             {
-                var changes = new AirplaneRequest { Capacity = 300, TypeId = 4, AirlineId = 1 };
+                var changes = new AirplaneDTO { Capacity = 300, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } };
 
                 // Act
                 bool updated = await airplaneData.Update(newId, changes);
@@ -212,8 +213,8 @@ namespace ZenithSky.Test.Data
                 Assert.That(updated, Is.True);
                 Assert.That(airplane, Is.Not.Null);
                 Assert.That(airplane.Capacity, Is.EqualTo(300));
-                Assert.That(airplane.AirplaneType.TypeId, Is.EqualTo(4));
-                Assert.That(airplane.Airline.AirlineId, Is.EqualTo(1));
+                Assert.That(airplane.AirplaneType.TypeId, Is.EqualTo(3));
+                Assert.That(airplane.Airline.AirlineId, Is.EqualTo(3));
             }
             finally
             {
@@ -225,7 +226,7 @@ namespace ZenithSky.Test.Data
         public async Task Update_WhenAirplaneDoesNotExist()
         {
             AirplaneData airplaneData = new AirplaneData(this.connectionString);
-            var changes = new AirplaneRequest { Capacity = 100, TypeId = 1, AirlineId = 1 };
+            var changes = new AirplaneDTO { Capacity = 150, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } };
             bool updated = await airplaneData.Update(99999, changes);
             Assert.That(updated, Is.False);
         }
@@ -236,7 +237,7 @@ namespace ZenithSky.Test.Data
             // Arrange
             AirplaneData airplaneData = new AirplaneData(this.connectionString);
             int newId = await airplaneData.Insert(
-                new AirplaneRequest { Capacity = 150, TypeId = 3, AirlineId = 3 });
+                new AirplaneDTO { Capacity = 150, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } });
 
             // Act
             bool deleted = await airplaneData.Delete(newId);

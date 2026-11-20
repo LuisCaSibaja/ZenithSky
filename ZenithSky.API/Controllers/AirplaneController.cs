@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ZenithSky.Business;
 using ZenithSky.Domain;
+using ZenithSky.Dto;
 
 namespace ZenithSky.API.Controllers
 {
@@ -52,7 +53,7 @@ namespace ZenithSky.API.Controllers
 
         // POST: api/airplanes  -> valida capacity > 0 y que existan el tipo y la aerolínea
         [HttpPost]
-        public async Task<ActionResult<Airplane>> Create([FromBody] AirplaneRequest request)
+        public async Task<ActionResult<Airplane>> Create([FromBody] AirplaneDTO request)
         {
             var error = await Validate(request);
             if (error != null)
@@ -66,7 +67,7 @@ namespace ZenithSky.API.Controllers
 
         // PUT: api/airplanes/1
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] AirplaneRequest request)
+        public async Task<IActionResult> Update(int id, [FromBody] AirplaneDTO request)
         {
             if (id <= 0)
                 return BadRequest(new { message = "El ID del avión debe ser mayor que cero." });
@@ -97,7 +98,7 @@ namespace ZenithSky.API.Controllers
         }
 
         // Validaciones comunes del POST y PUT. Devuelve null si todo está bien.
-        private async Task<ActionResult?> Validate(AirplaneRequest? request)
+        private async Task<ActionResult?> Validate(AirplaneDTO? request)
         {
             if (request == null)
                 return BadRequest(new { message = "Debe enviar los datos del avión." });
@@ -105,11 +106,11 @@ namespace ZenithSky.API.Controllers
             if (request.Capacity <= 0)
                 return BadRequest(new { message = "La capacidad de pasajeros debe ser un entero mayor que cero." });
 
-            if (!await airplaneBusiness.AirplaneTypeExists(request.TypeId))
-                return BadRequest(new { message = $"El tipo de avión con ID {request.TypeId} no existe." });
+            if (!await airplaneBusiness.AirplaneTypeExists(request.AirplaneType!.TypeId))
+                return BadRequest(new { message = $"El tipo de avión con ID {request.AirplaneType.TypeId} no existe." });
 
-            if (!await airplaneBusiness.AirlineExists(request.AirlineId))
-                return BadRequest(new { message = $"La aerolínea con ID {request.AirlineId} no existe." });
+            if (!await airplaneBusiness.AirlineExists(request.Airline!.AirlineId))
+                return BadRequest(new { message = $"La aerolínea con ID {request.Airline.AirlineId} no existe." });
 
             return null;
         }

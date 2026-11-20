@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using ZenithSky.Domain;
+using ZenithSky.Dto;
 using System.Data;
 
 namespace ZenithSky.Data{
@@ -83,7 +84,7 @@ namespace ZenithSky.Data{
              return airline;
           }
 
-          public async Task<int> Insert(AirlineRequest airline)
+          public async Task<int> Insert(AirlineDTO airline)
           {
              int newId;
              using (var connection = new SqlConnection(connectionString))
@@ -95,15 +96,15 @@ namespace ZenithSky.Data{
                      command.CommandType = CommandType.StoredProcedure;
                      command.Parameters.AddWithValue("@iata", airline.Iata);
                      command.Parameters.AddWithValue("@airlinename", airline.Airlinename);
-                     command.Parameters.AddWithValue("@base_airport", airline.BaseAirport);
+                     command.Parameters.AddWithValue("@base_airport", airline.BaseAirport!.AirportId);
 
-                     newId = Convert.ToInt32(await command.ExecuteScalarAsync());
+                    newId = Convert.ToInt32(await command.ExecuteScalarAsync());
                  }
              }
              return newId;
           }
 
-          public async Task<bool> Update(int id, AirlineRequest airline)
+          public async Task<bool> Update(int id, AirlineDTO airline)
           {
               int rowsAffected;
 
@@ -117,7 +118,7 @@ namespace ZenithSky.Data{
                     command.Parameters.AddWithValue("@airline_id", id);
                     command.Parameters.AddWithValue("@iata", airline.Iata);
                     command.Parameters.AddWithValue("@airlinename", airline.Airlinename);
-                    command.Parameters.AddWithValue("@base_airport", airline.BaseAirport);
+                    command.Parameters.AddWithValue("@base_airport", airline.BaseAirport!.AirportId);
 
                     rowsAffected = Convert.ToInt32(await command.ExecuteScalarAsync());
                  }

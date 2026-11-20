@@ -4,6 +4,7 @@ using System.Data;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using ZenithSky.Domain;
+using ZenithSky.Dto;
 
 namespace ZenithSky.Data
 {
@@ -69,7 +70,7 @@ namespace ZenithSky.Data
             return airplane;
         }
 
-        public async Task<int> Insert(AirplaneRequest airplane)
+        public async Task<int> Insert(AirplaneDTO airplane)
         {
             int newId;
 
@@ -81,8 +82,8 @@ namespace ZenithSky.Data
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@capacity", airplane.Capacity);
-                    command.Parameters.AddWithValue("@type_id", airplane.TypeId);
-                    command.Parameters.AddWithValue("@airline_id", airplane.AirlineId);
+                    command.Parameters.AddWithValue("@type_id", airplane.AirplaneType!.TypeId);
+                    command.Parameters.AddWithValue("@airline_id", airplane.Airline!.AirlineId);
 
                     newId = Convert.ToInt32(await command.ExecuteScalarAsync());
                 }
@@ -90,7 +91,7 @@ namespace ZenithSky.Data
             return newId;
         }
 
-        public async Task<bool> Update(int id, AirplaneRequest airplane)
+        public async Task<bool> Update(int id, AirplaneDTO airplane)
         {
             int rowsAffected;
 
@@ -103,8 +104,8 @@ namespace ZenithSky.Data
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@airplane_id", id);
                     command.Parameters.AddWithValue("@capacity", airplane.Capacity);
-                    command.Parameters.AddWithValue("@type_id", airplane.TypeId);
-                    command.Parameters.AddWithValue("@airline_id", airplane.AirlineId);
+                    command.Parameters.AddWithValue("@type_id", airplane.AirplaneType!.TypeId);
+                    command.Parameters.AddWithValue("@airline_id", airplane.Airline!.AirlineId);
 
                     rowsAffected = Convert.ToInt32(await command.ExecuteScalarAsync());
                 }

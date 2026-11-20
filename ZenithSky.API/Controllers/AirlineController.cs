@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ZenithSky.Business;
 using ZenithSky.Domain;
+using ZenithSky.Dto;
 
 namespace ZenithSky.API.Controllers
 {
@@ -46,7 +47,7 @@ namespace ZenithSky.API.Controllers
 
         //Este es para crearlas y valida que el aeropuerto base exista
         [HttpPost]
-        public async Task<ActionResult<Airline>> Create([FromBody] AirlineRequest request)
+        public async Task<ActionResult<Airline>> Create([FromBody] AirlineDTO request)
         {
             if (request == null)
                 return BadRequest(new { message = "Debe enviar los datos de la aerolínea." });
@@ -60,8 +61,8 @@ namespace ZenithSky.API.Controllers
             if (request.Airlinename.Length == 0 || request.Airlinename.Length > 100)
                 return BadRequest(new { message = "El nombre de la aerolínea es obligatorio y no puede superar los 100 caracteres." });
 
-            if (!await airlineBusiness.AirportExists(request.BaseAirport))
-                return BadRequest(new { message = $"El aeropuerto base con ID {request.BaseAirport} no existe." });
+            if (!await airlineBusiness.AirportExists(request.BaseAirport!.AirportId))
+                return BadRequest(new { message = $"El aeropuerto base con ID {request.BaseAirport.AirportId} no existe." });
 
             int newId = await airlineBusiness.Insert(request);
             var created = await airlineBusiness.GetById(newId);
@@ -71,7 +72,7 @@ namespace ZenithSky.API.Controllers
 
         //para actualizar, con las mismo
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] AirlineRequest request)
+        public async Task<IActionResult> Update(int id, [FromBody] AirlineDTO request)
         {
             if (id <= 0)
                 return BadRequest(new { message = "El ID de la aerolínea debe ser mayor que cero." });
@@ -88,8 +89,8 @@ namespace ZenithSky.API.Controllers
             if (request.Airlinename.Length == 0 || request.Airlinename.Length > 100)
                 return BadRequest(new { message = "El nombre de la aerolínea es obligatorio y no puede superar los 100 caracteres." });
 
-            if (!await airlineBusiness.AirportExists(request.BaseAirport))
-                return BadRequest(new { message = $"El aeropuerto base con ID {request.BaseAirport} no existe." });
+            if (!await airlineBusiness.AirportExists(request.BaseAirport!.AirportId))
+                return BadRequest(new { message = $"El aeropuerto base con ID {request.BaseAirport.AirportId} no existe." });
 
             bool updated = await airlineBusiness.Update(id, request);
             if (!updated)

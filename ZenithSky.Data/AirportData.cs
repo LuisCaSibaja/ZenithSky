@@ -4,6 +4,7 @@ using System.Text;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using ZenithSky.Domain;
+using ZenithSky.Dto;
 
 namespace ZenithSky.Data
 {
@@ -101,7 +102,7 @@ namespace ZenithSky.Data
 
         //crud con procedimientos almacenados
         // Inserta un aeropuerto y devuelve el id generado
-        public async Task<int> Insert(AirportRequest airport)
+        public async Task<int> Insert(AirportDTO airport)
         {
             int newId;
 
@@ -123,7 +124,7 @@ namespace ZenithSky.Data
         }
 
         // Actualiza un aeropuerto; devuelve false si no existe
-        public async Task<bool> Update(int id, AirportRequest airport)
+        public async Task<bool> Update(int id, AirportDTO airport)
         {
             int rowsAffected;
 

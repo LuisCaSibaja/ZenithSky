@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ZenithSky.Data\ZenithSky.Data.csproj" />
     <ProjectReference Include="..\ZenithSky.Domain\ZenithSky.Domain.csproj" />
+    <ProjectReference Include="..\ZenithSky.Dto\ZenithSky.Dto.csproj" />
   </ItemGroup>
 
 </Project>

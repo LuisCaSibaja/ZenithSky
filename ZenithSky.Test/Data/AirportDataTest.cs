@@ -1,5 +1,6 @@
 ﻿using ZenithSky.Data;
 using ZenithSky.Domain;
+using ZenithSky.Dto;
 
 namespace ZenithSky.Test.Data
 {
@@ -82,7 +83,7 @@ namespace ZenithSky.Test.Data
             // Assert
             Assert.That(airport, Is.Not.Null);
             Assert.That(airport.Iata, Is.EqualTo("SJO"));
-            Assert.That(airport.Icao, Is.EqualTo("MROC"));
+            Assert.That(airport.Icao, Is.EqualTo("CASS"));
             Assert.That(airport.Name, Is.EqualTo("Aeropuerto Internacional Juan Santamaría"));
 
 
@@ -135,7 +136,7 @@ namespace ZenithSky.Test.Data
         public async Task IcaoExists_WhenIcaoIsDuplicated()
         {
             AirportData airportData = new AirportData(this.connectionString);
-            bool exists = await airportData.IcaoExists("MROC");
+            bool exists = await airportData.IcaoExists("CASS");
             Assert.That(exists, Is.True);
         }
 
@@ -178,7 +179,7 @@ namespace ZenithSky.Test.Data
         {
             // Arrange
             AirportData airportData = new AirportData(this.connectionString);
-            var request = new AirportRequest { Iata = "QQQ", Icao = "QQQQ", Name = "Test Insert" };
+            var request = new AirportDTO { Iata = "QQQ", Icao = "QQQQ", Name = "Test Insert" };
             int newId = 0;
 
             try
@@ -209,11 +210,11 @@ namespace ZenithSky.Test.Data
             // Arrange
             AirportData airportData = new AirportData(this.connectionString);
             int newId = await airportData.Insert(
-                new AirportRequest { Iata = "QQQ", Icao = "QQQQ", Name = "Test Update" });
+                new AirportDTO { Iata = "QQQ", Icao = "QQQQ", Name = "Test Update" });
 
             try
             {
-                var changes = new AirportRequest { Iata = "QQW", Icao = "QQQW", Name = "Test Update Editado" };
+                var changes = new AirportDTO { Iata = "QQW", Icao = "QQQW", Name = "Test Update Editado" };
 
                 // Act
                 bool updated = await airportData.Update(newId, changes);
@@ -236,7 +237,7 @@ namespace ZenithSky.Test.Data
         public async Task Update_WhenAirportDoesNotExist()
         {
             AirportData airportData = new AirportData(this.connectionString);
-            var changes = new AirportRequest { Iata = "QQQ", Icao = "QQQQ", Name = "No existe" };
+            var changes = new AirportDTO { Iata = "QQQ", Icao = "QQQQ", Name = "No existe" };
             bool updated = await airportData.Update(99999, changes);
             Assert.That(updated, Is.False);
         }
@@ -247,7 +248,7 @@ namespace ZenithSky.Test.Data
             // Arrange
             AirportData airportData = new AirportData(this.connectionString);
             int newId = await airportData.Insert(
-                new AirportRequest { Iata = "QQQ", Icao = "QQQQ", Name = "Test Delete" });
+                new AirportDTO { Iata = "QQQ", Icao = "QQQQ", Name = "Test Delete" });
 
             // Act
             bool deleted = await airportData.Delete(newId);

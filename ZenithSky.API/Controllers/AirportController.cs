@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ZenithSky.Business;
 using ZenithSky.Domain;
+using ZenithSky.Dto;
 
 namespace ZenithSky.API.Controllers
 {
@@ -47,7 +48,7 @@ namespace ZenithSky.API.Controllers
 
         // POST: api/airports  -> valida iata (3 letras) e icao (4 letras) obligatorios y no duplicados
         [HttpPost]
-        public async Task<ActionResult<Airport>> Create([FromBody] AirportRequest request)
+        public async Task<ActionResult<Airport>> Create([FromBody] AirportDTO request)
         {
             var error = await Validate(request, 0);
             if (error != null)
@@ -61,7 +62,7 @@ namespace ZenithSky.API.Controllers
 
         // PUT: api/airports/1  -> mismas validaciones, sin contar al propio aeropuerto como duplicado
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] AirportRequest request)
+        public async Task<IActionResult> Update(int id, [FromBody] AirportDTO request)
         {
             if (id <= 0)
                 return BadRequest(new { message = "El ID del aeropuerto debe ser mayor que cero." });
@@ -102,7 +103,7 @@ namespace ZenithSky.API.Controllers
         }
 
         // Validaciones comunes del POST y PUT. Devuelve null si todo está bien.
-        private async Task<ActionResult?> Validate(AirportRequest? request, int excludeId)
+        private async Task<ActionResult?> Validate(AirportDTO? request, int excludeId)
         {
             if (request == null)
                 return BadRequest(new { message = "Debe enviar los datos del aeropuerto." });

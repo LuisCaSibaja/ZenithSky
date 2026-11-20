@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ZenithSky.Data;
 using ZenithSky.Domain;
+using ZenithSky.Dto;
 
 namespace ZenithSky.Business
 {
@@ -26,12 +27,12 @@ namespace ZenithSky.Business
             return await airportData.GetByAirportId(id);
         }
 
-        public async Task<int> Insert(AirportRequest airport)
+        public async Task<int> Insert(AirportDTO airport)
         {
             return await airportData.Insert(airport);
         }
 
-        public async Task<bool> Update(int id, AirportRequest airport)
+        public async Task<bool> Update(int id, AirportDTO airport)
         {
             return await airportData.Update(id, airport);
         }
