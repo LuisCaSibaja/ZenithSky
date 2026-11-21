@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using ZenithSky.Data;
 using ZenithSky.Domain;
 using ZenithSky.Dto;
@@ -48,7 +49,38 @@ namespace ZenithSky.Business
 
         public async Task<bool> AirlineExists(int airlineId)
         {
-            return await airplaneData.AirlineExists(airlineId);
+            return await airlineData.AirlineExists(airlineId);
+        }
+
+        public async Task<BusinessResult> Validate(AirplaneDTO? request)
+        {
+            if (request == null)
+                return BusinessResult.BadRequest("Debe enviar los datos del avión.");
+
+            if (request.Capacity <= 0)
+                return BusinessResult.BadRequest("La capacidad de pasajeros debe ser un entero mayor que cero.");
+
+            int typeId = request.AirplaneType?.TypeId ?? request.TypeId ?? 0;
+            if (typeId <= 0 || !await airplaneData.AirplaneTypeExists(typeId))
+                return BusinessResult.BadRequest($"El tipo de avión con ID {typeId} no existe.");
+
+            int airlineId = request.Airline?.AirlineId ?? request.AirlineId ?? 0;
+            if (airlineId <= 0 || !await airplaneData.AirlineExists(airlineId))
+                return BusinessResult.BadRequest($"La aerolínea con ID {airlineId} no existe.");
+
+            return BusinessResult.Ok();
+        }
+
+        public async Task<BusinessResult> ValidateDelete(int id)
+        {
+            if (id <= 0)
+                return BusinessResult.BadRequest("El ID del avión debe ser mayor que cero.");
+
+            var airplane = await airplaneData.GetById(id);
+            if (airplane == null)
+                return BusinessResult.NotFound($"No se encontró el avión con ID {id}.");
+
+            return BusinessResult.Ok();
         }
     }
 }
