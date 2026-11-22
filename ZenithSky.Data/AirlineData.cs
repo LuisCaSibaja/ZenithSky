@@ -96,7 +96,7 @@ namespace ZenithSky.Data{
                      command.CommandType = CommandType.StoredProcedure;
                      command.Parameters.AddWithValue("@iata", airline.Iata);
                      command.Parameters.AddWithValue("@airlinename", airline.Airlinename);
-                     command.Parameters.AddWithValue("@base_airport", airline.BaseAirport!.AirportId);
+                     command.Parameters.AddWithValue("@base_airport", airline.BaseAirport);
 
                     newId = Convert.ToInt32(await command.ExecuteScalarAsync());
                  }
@@ -118,7 +118,7 @@ namespace ZenithSky.Data{
                     command.Parameters.AddWithValue("@airline_id", id);
                     command.Parameters.AddWithValue("@iata", airline.Iata);
                     command.Parameters.AddWithValue("@airlinename", airline.Airlinename);
-                    command.Parameters.AddWithValue("@base_airport", airline.BaseAirport!.AirportId);
+                    command.Parameters.AddWithValue("@base_airport", airline.BaseAirport);
 
                     rowsAffected = Convert.ToInt32(await command.ExecuteScalarAsync());
                  }

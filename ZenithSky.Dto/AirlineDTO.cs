@@ -10,7 +10,7 @@ namespace ZenithSky.Dto
         private int airlineId;
         private string? iata;
         private string? airlinename;
-        private AirportDTO? baseAirport;
+        private int baseAirport;
 
         public AirlineDTO()
         {
@@ -32,8 +32,9 @@ namespace ZenithSky.Dto
         [JsonPropertyName("airlinename")]
         public string? Airlinename { get => airlinename; set => airlinename = value; }
 
-        [Required(ErrorMessage = "El aeropuerto base es obligatorio.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un aeropuerto base válido.")]
+        [DefaultValue(1)]
         [JsonPropertyName("baseAirport")]
-        public AirportDTO? BaseAirport { get => baseAirport; set => baseAirport = value; }
+        public int BaseAirport { get => baseAirport; set => baseAirport = value; }
     }
 }

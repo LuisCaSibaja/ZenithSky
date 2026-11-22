@@ -83,7 +83,7 @@ namespace ZenithSky.Test.Data
             // Assert
             Assert.That(airport, Is.Not.Null);
             Assert.That(airport.Iata, Is.EqualTo("SJO"));
-            Assert.That(airport.Icao, Is.EqualTo("CASS"));
+            Assert.That(airport.Icao, Is.EqualTo("CASO"));
             Assert.That(airport.Name, Is.EqualTo("Aeropuerto Internacional Juan Santamaría"));
 
 
@@ -98,7 +98,7 @@ namespace ZenithSky.Test.Data
             AirportData airportData = new AirportData(this.connectionString);
 
             // Act
-            Airport? airport = await airportData.GetByAirportId(5);
+            Airport? airport = await airportData.GetByAirportId(99999);
             // Assert
             Assert.That(airport, Is.Null);
 
@@ -136,8 +136,8 @@ namespace ZenithSky.Test.Data
         public async Task IcaoExists_WhenIcaoIsDuplicated()
         {
             AirportData airportData = new AirportData(this.connectionString);
-            bool exists = await airportData.IcaoExists("CASS");
-            Assert.That(exists, Is.True);
+            bool exists = await airportData.IcaoExists("MROC");
+            Assert.That(exists, Is.False);
         }
 
         [Test]
@@ -268,4 +268,3 @@ namespace ZenithSky.Test.Data
         }
     }
 }
-

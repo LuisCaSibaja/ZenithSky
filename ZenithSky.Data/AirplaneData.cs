@@ -82,8 +82,8 @@ namespace ZenithSky.Data
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@capacity", airplane.Capacity);
-                    command.Parameters.AddWithValue("@type_id", airplane.AirplaneType!.TypeId);
-                    command.Parameters.AddWithValue("@airline_id", airplane.Airline!.AirlineId);
+                    command.Parameters.AddWithValue("@type_id", airplane.TypeId);
+                    command.Parameters.AddWithValue("@airline_id", airplane.AirlineId);
 
                     newId = Convert.ToInt32(await command.ExecuteScalarAsync());
                 }
@@ -104,8 +104,8 @@ namespace ZenithSky.Data
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@airplane_id", id);
                     command.Parameters.AddWithValue("@capacity", airplane.Capacity);
-                    command.Parameters.AddWithValue("@type_id", airplane.AirplaneType!.TypeId);
-                    command.Parameters.AddWithValue("@airline_id", airplane.Airline!.AirlineId);
+                    command.Parameters.AddWithValue("@type_id", airplane.TypeId);
+                    command.Parameters.AddWithValue("@airline_id", airplane.AirlineId);
 
                     rowsAffected = Convert.ToInt32(await command.ExecuteScalarAsync());
                 }

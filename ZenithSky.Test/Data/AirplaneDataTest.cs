@@ -168,7 +168,7 @@ namespace ZenithSky.Test.Data
         {
             // Arrange
             AirplaneData airplaneData = new AirplaneData(this.connectionString);
-            var request = new AirplaneDTO { Capacity = 150, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } };
+            var request = new AirplaneDTO { Capacity = 150, TypeId = 3, AirlineId = 3 };
             int newId = 0;
 
             try
@@ -199,11 +199,11 @@ namespace ZenithSky.Test.Data
             // Arrange
             AirplaneData airplaneData = new AirplaneData(this.connectionString);
             int newId = await airplaneData.Insert(
-                new AirplaneDTO { Capacity = 150, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } });
+                new AirplaneDTO { Capacity = 150, TypeId = 3, AirlineId = 3 });
 
             try
             {
-                var changes = new AirplaneDTO { Capacity = 300, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } };
+                var changes = new AirplaneDTO { Capacity = 300, TypeId = 3, AirlineId = 3 };
 
                 // Act
                 bool updated = await airplaneData.Update(newId, changes);
@@ -226,7 +226,7 @@ namespace ZenithSky.Test.Data
         public async Task Update_WhenAirplaneDoesNotExist()
         {
             AirplaneData airplaneData = new AirplaneData(this.connectionString);
-            var changes = new AirplaneDTO { Capacity = 150, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } };
+            var changes = new AirplaneDTO { Capacity = 150, TypeId = 3, AirlineId = 3 };
             bool updated = await airplaneData.Update(99999, changes);
             Assert.That(updated, Is.False);
         }
@@ -237,7 +237,7 @@ namespace ZenithSky.Test.Data
             // Arrange
             AirplaneData airplaneData = new AirplaneData(this.connectionString);
             int newId = await airplaneData.Insert(
-                new AirplaneDTO { Capacity = 150, AirplaneType = new AirplaneTypeDTO { TypeId = 3 }, Airline = new AirlineDTO { AirlineId = 3 } });
+                new AirplaneDTO { Capacity = 150, TypeId = 3, AirlineId = 3 });
 
             // Act
             bool deleted = await airplaneData.Delete(newId);

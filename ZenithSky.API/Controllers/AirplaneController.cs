@@ -106,11 +106,11 @@ namespace ZenithSky.API.Controllers
             if (request.Capacity <= 0)
                 return BadRequest(new { message = "La capacidad de pasajeros debe ser un entero mayor que cero." });
 
-            if (!await airplaneBusiness.AirplaneTypeExists(request.AirplaneType!.TypeId))
-                return BadRequest(new { message = $"El tipo de avión con ID {request.AirplaneType.TypeId} no existe." });
+            if (!await airplaneBusiness.AirplaneTypeExists(request.TypeId))
+                return BadRequest(new { message = $"El tipo de avión con ID {request.TypeId} no existe." });
 
-            if (!await airplaneBusiness.AirlineExists(request.Airline!.AirlineId))
-                return BadRequest(new { message = $"La aerolínea con ID {request.Airline.AirlineId} no existe." });
+            if (!await airplaneBusiness.AirlineExists(request.AirlineId))
+                return BadRequest(new { message = $"La aerolínea con ID {request.AirlineId} no existe." });
 
             return null;
         }

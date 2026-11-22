@@ -9,8 +9,8 @@ namespace ZenithSky.Dto
     {
         private int airplaneId;
         private int capacity;
-        private AirplaneTypeDTO? airplaneType;
-        private AirlineDTO? airline;
+        private int typeId;
+        private int airlineId;
 
         public AirplaneDTO()
         {
@@ -24,12 +24,14 @@ namespace ZenithSky.Dto
         [JsonPropertyName("capacity")]
         public int Capacity { get => capacity; set => capacity = value; }
 
-        [Required(ErrorMessage = "El tipo de avión es obligatorio.")]
-        [JsonPropertyName("airplaneType")]
-        public AirplaneTypeDTO? AirplaneType { get => airplaneType; set => airplaneType = value; }
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un tipo de avión válido.")]
+        [DefaultValue(2)]
+        [JsonPropertyName("typeId")]
+        public int TypeId { get => typeId; set => typeId = value; }
 
-        [Required(ErrorMessage = "La aerolínea es obligatoria.")]
-        [JsonPropertyName("airline")]
-        public AirlineDTO? Airline { get => airline; set => airline = value; }
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una aerolínea válida.")]
+        [DefaultValue(1)]
+        [JsonPropertyName("airlineId")]
+        public int AirlineId { get => airlineId; set => airlineId = value; }
     }
 }

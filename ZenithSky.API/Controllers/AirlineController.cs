@@ -23,101 +23,82 @@ namespace ZenithSky.API.Controllers
             this.airlineBusiness = new AirlineBusiness(connectionString);
         }
 
-        //para listar las aerolíneas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Airline>>> GetAll()
         {
-            var airlines = await airlineBusiness.GetAll();
-            return Ok(airlines);
+            return Ok(await airlineBusiness.GetAll());
         }
 
-        //para obtener por id
         [HttpGet("{id}")]
         public async Task<ActionResult<Airline>> GetById(int id)
         {
-            if (id <= 0)
-                return BadRequest(new { message = "El ID de la aerolínea debe ser mayor que cero." });
+            try
+            {
+                var airline = await airlineBusiness.GetById(id);
+                if (airline == null)
+                    return NotFound(new { message = $"No se encontró la aerolínea con ID {id}." });
 
-            var airline = await airlineBusiness.GetById(id);
-            if (airline == null)
-                return NotFound(new { message = $"No se encontró la aerolínea con ID {id}." });
-
-            return Ok(airline);
+                return Ok(airline);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        //Este es para crearlas y valida que el aeropuerto base exista
         [HttpPost]
         public async Task<ActionResult<Airline>> Create([FromBody] AirlineDTO request)
         {
-            if (request == null)
-                return BadRequest(new { message = "Debe enviar los datos de la aerolínea." });
-
-            request.Iata = request.Iata?.Trim().ToUpper() ?? "";
-            request.Airlinename = request.Airlinename?.Trim() ?? "";
-
-            if (request.Iata.Length != 2)
-                return BadRequest(new { message = "El código IATA es obligatorio y debe tener exactamente 2 caracteres." });
-
-            if (request.Airlinename.Length == 0 || request.Airlinename.Length > 100)
-                return BadRequest(new { message = "El nombre de la aerolínea es obligatorio y no puede superar los 100 caracteres." });
-
-            if (!await airlineBusiness.AirportExists(request.BaseAirport!.AirportId))
-                return BadRequest(new { message = $"El aeropuerto base con ID {request.BaseAirport.AirportId} no existe." });
-
-            int newId = await airlineBusiness.Insert(request);
-            var created = await airlineBusiness.GetById(newId);
-
-            return CreatedAtAction(nameof(GetById), new { id = newId }, created);
+            try
+            {
+                var created = await airlineBusiness.Insert(request);
+                return CreatedAtAction(nameof(GetById), new { id = created.AirlineId }, created);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        //para actualizar, con las mismo
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] AirlineDTO request)
         {
-            if (id <= 0)
-                return BadRequest(new { message = "El ID de la aerolínea debe ser mayor que cero." });
-
-            if (request == null)
-                return BadRequest(new { message = "Debe enviar los datos de la aerolínea." });
-
-            request.Iata = request.Iata?.Trim().ToUpper() ?? "";
-            request.Airlinename = request.Airlinename?.Trim() ?? "";
-
-            if (request.Iata.Length != 2)
-                return BadRequest(new { message = "El código IATA es obligatorio y debe tener exactamente 2 caracteres." });
-
-            if (request.Airlinename.Length == 0 || request.Airlinename.Length > 100)
-                return BadRequest(new { message = "El nombre de la aerolínea es obligatorio y no puede superar los 100 caracteres." });
-
-            if (!await airlineBusiness.AirportExists(request.BaseAirport!.AirportId))
-                return BadRequest(new { message = $"El aeropuerto base con ID {request.BaseAirport.AirportId} no existe." });
-
-            bool updated = await airlineBusiness.Update(id, request);
-            if (!updated)
-                return NotFound(new { message = $"No se encontró la aerolínea con ID {id}." });
-
-            return NoContent();
+            try
+            {
+                await airlineBusiness.Update(id, request);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
-        //eliminamos usando la regla que se pdie
+        //Aquí lanzamos el error 409 si la aerolínea tiene aviones, este está en la capa bussinesss
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (id <= 0)
-                return BadRequest(new { message = "El ID de la aerolínea debe ser mayor que cero." });
-
-            var airline = await airlineBusiness.GetById(id);
-            if (airline == null)
-                return NotFound(new { message = $"No se encontró la aerolínea con ID {id}." });
-
-            if (await airlineBusiness.HasAirplanes(id))
-                return Conflict(new { message = "No se puede eliminar la aerolínea porque posee aeronaves asignadas." });
-
-            bool deleted = await airlineBusiness.Delete(id);
-            if (!deleted)
-                return NotFound(new { message = $"No se encontró la aerolínea con ID {id}." });
-
-            return NoContent();
+            try
+            {
+                await airlineBusiness.Delete(id);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
     }
 }

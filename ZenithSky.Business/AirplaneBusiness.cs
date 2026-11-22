@@ -49,7 +49,7 @@ namespace ZenithSky.Business
 
         public async Task<bool> AirlineExists(int airlineId)
         {
-            return await airlineData.AirlineExists(airlineId);
+            return await airplaneData.AirlineExists(airlineId);
         }
 
         public async Task<BusinessResult> Validate(AirplaneDTO? request)
@@ -60,11 +60,11 @@ namespace ZenithSky.Business
             if (request.Capacity <= 0)
                 return BusinessResult.BadRequest("La capacidad de pasajeros debe ser un entero mayor que cero.");
 
-            int typeId = request.AirplaneType?.TypeId ?? request.TypeId ?? 0;
+            int typeId = request.TypeId;
             if (typeId <= 0 || !await airplaneData.AirplaneTypeExists(typeId))
                 return BusinessResult.BadRequest($"El tipo de avión con ID {typeId} no existe.");
 
-            int airlineId = request.Airline?.AirlineId ?? request.AirlineId ?? 0;
+            int airlineId = request.AirlineId;
             if (airlineId <= 0 || !await airplaneData.AirlineExists(airlineId))
                 return BusinessResult.BadRequest($"La aerolínea con ID {airlineId} no existe.");
 

@@ -107,7 +107,7 @@ namespace ZenithSky.Test.Data
         {
             // Arrange
             AirlineData airlineData = new AirlineData(this.connectionString);
-            var request = new AirlineDTO { Iata = "TT", Airlinename = "Test Insert", BaseAirport = new AirportDTO { AirportId = 4 } };
+            var request = new AirlineDTO { Iata = "TT", Airlinename = "Test Insert", BaseAirport = 4 };
             int newId = 0;
 
             try
@@ -138,11 +138,11 @@ namespace ZenithSky.Test.Data
             // Arrange
             AirlineData airlineData = new AirlineData(this.connectionString);
             int newId = await airlineData.Insert(
-                new AirlineDTO { Iata = "TT", Airlinename = "Test Update Editada", BaseAirport = new AirportDTO { AirportId = 4 } });
+                new AirlineDTO { Iata = "TT", Airlinename = "Test Update", BaseAirport = 4 });
 
             try
             {
-                var changes = new AirlineDTO { Iata = "TT", Airlinename = "Test Update Editada", BaseAirport = new AirportDTO { AirportId = 4 } };
+                var changes = new AirlineDTO { Iata = "TU", Airlinename = "Test Update Editada", BaseAirport = 1 };
 
                 // Act
                 bool updated = await airlineData.Update(newId, changes);
@@ -151,9 +151,9 @@ namespace ZenithSky.Test.Data
                 // Assert
                 Assert.That(updated, Is.True);
                 Assert.That(airline, Is.Not.Null);
-                Assert.That(airline.Iata, Is.EqualTo("TT"));
+                Assert.That(airline.Iata, Is.EqualTo("TU"));
                 Assert.That(airline.AirlineName, Is.EqualTo("Test Update Editada"));
-                Assert.That(airline.BaseAirport.AirportId, Is.EqualTo(4));
+                Assert.That(airline.BaseAirport.AirportId, Is.EqualTo(1));
             }
             finally
             {
@@ -165,7 +165,7 @@ namespace ZenithSky.Test.Data
         public async Task Update_WhenAirlineDoesNotExist()
         {
             AirlineData airlineData = new AirlineData(this.connectionString);
-            var changes = new AirlineDTO { Iata = "TT", Airlinename = "Test Insert", BaseAirport = new AirportDTO { AirportId = 4 } };
+            var changes = new AirlineDTO { Iata = "TT", Airlinename = "Test Insert", BaseAirport = 4 };
             bool updated = await airlineData.Update(99999, changes);
             Assert.That(updated, Is.False);
         }
@@ -176,7 +176,7 @@ namespace ZenithSky.Test.Data
             // Arrange
             AirlineData airlineData = new AirlineData(this.connectionString);
             int newId = await airlineData.Insert(
-                new AirlineDTO { Iata = "TT", Airlinename = "Test Insert", BaseAirport = new AirportDTO { AirportId = 4 } });
+                new AirlineDTO { Iata = "TT", Airlinename = "Test Delete", BaseAirport = 4 });
 
             // Act
             bool deleted = await airlineData.Delete(newId);

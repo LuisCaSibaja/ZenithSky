@@ -18,12 +18,12 @@ namespace ZenithSky.Dto
         [JsonPropertyName("typeId")]
         public int TypeId { get => typeId; set => typeId = value; }
 
-        [Required(ErrorMessage = "El identificador es obligatorio.")]
+        [StringLength(50, ErrorMessage = "El identificador no puede superar los 50 caracteres.")]
         [DefaultValue("A320")]
         [JsonPropertyName("identifier")]
         public string? Identifier { get => identifier; set => identifier = value; }
 
-        [Required(ErrorMessage = "La descripción es obligatoria.")]
+        [StringLength(250, ErrorMessage = "La descripción no puede superar los 250 caracteres.")]
         [DefaultValue("Airbus A320 comercial de pasillo único")]
         [JsonPropertyName("description")]
         public string? Description { get => description; set => description = value; }

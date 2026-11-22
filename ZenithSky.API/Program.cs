@@ -1,7 +1,21 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(
+    options =>
+    {
+        //Esto lo que hace es que si un DTO no pasa las validaciones, responde con error 400 con formato JSON
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            string message = context.ModelState.Values
+                .SelectMany(entry => entry.Errors)
+                .Select(error => error.ErrorMessage)
+                .FirstOrDefault(text => !string.IsNullOrWhiteSpace(text)) ?? "Los datos enviados no son válidos.";
+            return new BadRequestObjectResult(new { message });
+        };
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
